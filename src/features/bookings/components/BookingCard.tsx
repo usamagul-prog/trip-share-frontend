@@ -26,13 +26,18 @@ export default function BookingCard({ booking, onCancel, cancelLoading }: Props)
   const navigate = useNavigate();
   const { trip } = booking;
   const isUpcoming = ['pending', 'confirmed'].includes(booking.status);
-  const isPast = new Date(trip.departure_time) <= new Date();
+  const isPast = new Date(trip.departure_time) < new Date();
   const canCancel = isUpcoming && !isPast;
 
   return (
     <Card
+      role="button"
+      tabIndex={0}
       className="cursor-pointer hover:shadow-md transition-shadow"
       onClick={() => navigate(`/trips/${trip._id}`)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') navigate(`/trips/${trip._id}`);
+      }}
     >
       <CardContent className="pt-4 pb-4 space-y-2">
         <div className="flex items-start justify-between">

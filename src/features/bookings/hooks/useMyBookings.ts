@@ -25,10 +25,21 @@ export function useMyBookings(tab: 'upcoming' | 'history' = 'upcoming') {
   }, [tab]);
 
   useEffect(() => {
+    setBookings([]);
+    setError(null);
+    setLoading(true);
+  }, [tab]);
+
+  useEffect(() => {
     const controller = new AbortController();
     fetchBookings(controller.signal);
     return () => controller.abort();
   }, [fetchBookings]);
 
-  return { bookings, loading, error, refetch: () => fetchBookings() };
+  const refetch = useCallback(() => {
+    const controller = new AbortController();
+    fetchBookings(controller.signal);
+  }, [fetchBookings]);
+
+  return { bookings, loading, error, refetch };
 }
