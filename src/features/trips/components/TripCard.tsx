@@ -3,6 +3,7 @@ import { MapPin, Clock, Users, Banknote } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trip } from '../types';
+import StarRating from '@/features/reviews/components/StarRating';
 
 interface Props {
   trip: Trip;
@@ -55,6 +56,13 @@ export default function TripCard({ trip }: Props) {
             <span>PKR {trip.fare.toLocaleString()}</span>
           </div>
         </div>
+
+        {trip.driver.avg_rating !== undefined && trip.driver.avg_rating > 0 && (
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <StarRating value={trip.driver.avg_rating} size="sm" />
+            <span>({trip.driver.review_count ?? 0})</span>
+          </span>
+        )}
       </CardContent>
     </Card>
   );

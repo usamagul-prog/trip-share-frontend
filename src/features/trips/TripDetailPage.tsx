@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import api from '@/lib/api';
 import { Trip } from './types';
+import StarRating from '@/features/reviews/components/StarRating';
 
 const statusVariant: Record<Trip['status'], 'default' | 'secondary' | 'outline' | 'destructive'> = {
   scheduled: 'default',
@@ -173,6 +174,14 @@ export default function TripDetailPage() {
             </p>
             <p className="text-sm font-medium">{trip.driver.name}</p>
             <p className="text-sm text-muted-foreground">{trip.driver.phone}</p>
+            {trip.driver.avg_rating !== undefined && trip.driver.avg_rating > 0 && (
+              <div className="flex items-center gap-2 mt-1">
+                <StarRating value={trip.driver.avg_rating} size="sm" />
+                <span className="text-xs text-muted-foreground">
+                  {trip.driver.avg_rating.toFixed(1)} ({trip.driver.review_count ?? 0} review{trip.driver.review_count !== 1 ? 's' : ''})
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

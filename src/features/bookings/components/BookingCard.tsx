@@ -78,6 +78,19 @@ export default function BookingCard({ booking, onCancel, cancelLoading }: Props)
             Cancel Booking
           </Button>
         )}
+
+        {booking.status === 'completed' && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/trips/${booking.trip._id}/review?bookingId=${booking._id}`);
+            }}
+          >
+            Leave Review
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
