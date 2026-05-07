@@ -19,8 +19,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<TripListPage />} />
-        <Route path="/trips/:id" element={<TripDetailPage />} />
         <Route path="/trips/create" element={<CreateTripPage />} />
+        <Route path="/trips/:id" element={<TripDetailPage />} />
         <Route path="/trips/:id/book" element={<BookingPage />} />
         <Route path="/bookings" element={<MyBookingsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
