@@ -1,9 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   signInWithPhoneNumber,
   RecaptchaVerifier,
   ConfirmationResult,
-  ApplicationVerifier,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -23,7 +22,14 @@ export function usePhoneAuth(): UsePhoneAuthReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const confirmationRef = useRef<ConfirmationResult | null>(null);
-  const recaptchaRef = useRef<ApplicationVerifier | null>(null);
+  const recaptchaRef = useRef<RecaptchaVerifier | null>(null);
+
+  useEffect(() => {
+    return () => {
+      recaptchaRef.current?.clear();
+      recaptchaRef.current = null;
+    };
+  }, []);
 
   const sendOtp = async (phone: string): Promise<void> => {
     setLoading(true);
@@ -40,8 +46,16 @@ export function usePhoneAuth(): UsePhoneAuthReturn {
         recaptchaRef.current
       );
       setStep('otp');
-    } catch {
-      setError('Failed to send OTP. Check the phone number and try again.');
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code;
+      if (code === 'auth/invalid-phone-number') {
+        setError('Invalid phone number. Use format: +92XXXXXXXXXX');
+      } else if (code === 'auth/too-many-requests') {
+        setError('Too many attempts. Please wait before trying again.');
+      } else {
+        setError('Failed to send OTP. Check the phone number and try again.');
+      }
+      recaptchaRef.current?.clear();
       recaptchaRef.current = null;
     } finally {
       setLoading(false);
@@ -49,7 +63,10 @@ export function usePhoneAuth(): UsePhoneAuthReturn {
   };
 
   const confirmOtp = async (otp: string): Promise<string> => {
-    if (!confirmationRef.current) throw new Error('No OTP request in progress');
+    if (!confirmationRef.current) {
+      setError('No OTP request in progress. Please request a new code.');
+      throw new Error('No OTP request in progress');
+    }
     setLoading(true);
     setError(null);
     try {
