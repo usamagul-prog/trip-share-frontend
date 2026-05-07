@@ -13,6 +13,8 @@ import EditProfilePage from './features/profile/EditProfilePage';
 import NotificationsPage from './features/notifications/NotificationsPage';
 import ChatPage from './features/chat/ChatPage';
 import DashboardPage from './features/admin/DashboardPage';
+import ReviewPage from './features/reviews/ReviewPage';
+import ReviewHistoryPage from './features/reviews/ReviewHistoryPage';
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
         <Route path="/trips/:id" element={<ProtectedRoute><TripDetailPage /></ProtectedRoute>} />
         <Route path="/trips/:id/book" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
         <Route path="/bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />
+        <Route path="/trips/:id/review" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
+        <Route path="/reviews" element={<ProtectedRoute><ReviewHistoryPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
