@@ -48,6 +48,10 @@ function RiderView() {
   const [searched, setSearched] = useState(false);
   const { results, loading, error, search } = useSearchTrips();
 
+  const handleFromChange = (v: string) => { setFrom(v); setSearched(false); };
+  const handleToChange   = (v: string) => { setTo(v);   setSearched(false); };
+  const handleDateChange = (v: string) => { setDate(v); setSearched(false); };
+
   const handleSearch = () => {
     if (!from || !to || !date) return;
     setSearched(true);
@@ -64,13 +68,14 @@ function RiderView() {
       <Card>
         <CardContent className="pt-4 space-y-3">
           <div className="grid grid-cols-2 gap-2">
-            <CitySelect value={from} onChange={setFrom} placeholder="From" />
-            <CitySelect value={to} onChange={setTo} placeholder="To" />
+            <CitySelect value={from} onChange={handleFromChange} placeholder="From" />
+            <CitySelect value={to} onChange={handleToChange} placeholder="To" />
           </div>
           <input
             type="date"
+            aria-label="Departure date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => handleDateChange(e.target.value)}
             min={new Date().toISOString().split('T')[0]}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           />
@@ -128,8 +133,13 @@ function RiderView() {
 
       {loading && <div className="flex justify-center py-10"><Spinner /></div>}
       {!loading && error && <p className="text-center text-destructive py-6">{error}</p>}
-      {!loading && searched && filtered.length === 0 && (
-        <p className="text-center text-muted-foreground py-10">No trips found</p>
+      {!loading && searched && results.length === 0 && (
+        <p className="text-center text-muted-foreground py-10">No trips found for this route</p>
+      )}
+      {!loading && searched && results.length > 0 && filtered.length === 0 && (
+        <p className="text-center text-muted-foreground py-10">
+          No trips match the current filters — try adjusting price or time.
+        </p>
       )}
       {!loading && filtered.length > 0 && (
         <div className="space-y-3">
@@ -172,7 +182,7 @@ function DriverView() {
       {!loading && !error && trips.length === 0 && (
         <p className="text-center text-muted-foreground py-10">No {tab} trips yet</p>
       )}
-      {!loading && !error && (
+      {!loading && !error && trips.length > 0 && (
         <div className="space-y-3">
           {trips.map((trip) => <TripCard key={trip._id} trip={trip} />)}
         </div>
