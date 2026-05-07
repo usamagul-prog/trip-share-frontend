@@ -169,11 +169,11 @@ export default function CreateTripPage() {
                 Waypoints{' '}
                 <span className="text-muted-foreground font-normal">(optional, up to 5)</span>
               </Label>
-              {(watch('waypoints') ?? []).map((_wp, idx) => (
-                <div key={idx} className="flex gap-2">
+              {(watch('waypoints') ?? []).map((wp, idx) => (
+                <div key={`${idx}-${(watch('waypoints') ?? []).length}`} className="flex gap-2">
                   <Input
                     placeholder={`Stop ${idx + 1}`}
-                    defaultValue={watch('waypoints')?.[idx] ?? ''}
+                    value={wp}
                     onChange={(e) => {
                       const current = [...(watch('waypoints') ?? [])];
                       current[idx] = e.target.value;

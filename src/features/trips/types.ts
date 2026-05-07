@@ -21,5 +21,5 @@ export interface Booking {
 }
 
 export interface TripWithBookings extends Trip {
-  bookings: Booking[];
+  bookings?: Booking[];
 }
