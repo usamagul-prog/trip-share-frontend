@@ -23,3 +23,19 @@ export interface Booking {
 export interface TripWithBookings extends Trip {
   bookings?: Booking[];
 }
+
+export interface BookingWithTrip {
+  _id: string;
+  trip: {
+    _id: string;
+    origin: string;
+    destination: string;
+    departure_time: string;
+    fare: number;
+    driver: { name: string };
+  };
+  pickup_point: string;
+  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed';
+  createdAt: string;
+  updatedAt: string;
+}
