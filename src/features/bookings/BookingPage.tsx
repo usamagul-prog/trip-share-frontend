@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -16,13 +17,17 @@ export default function BookingPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { trip, loading } = useTrip(id!);
+
+  if (!id) return null;
+
+  const { trip, loading } = useTrip(id);
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<FormData>();
 
-  if (user !== null && user.role !== 'rider') {
-    navigate('/');
-    return null;
-  }
+  useEffect(() => {
+    if (user !== null && user.role !== 'rider') {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -72,8 +77,9 @@ export default function BookingPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="text-sm font-medium block mb-1">Your Pickup Point</label>
+          <label htmlFor="pickup_point" className="text-sm font-medium block mb-1">Your Pickup Point</label>
           <textarea
+            id="pickup_point"
             {...register('pickup_point', {
               required: 'Pickup point is required',
               minLength: { value: 2, message: 'Minimum 2 characters' },
