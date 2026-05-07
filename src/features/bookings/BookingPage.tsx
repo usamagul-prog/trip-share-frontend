@@ -17,10 +17,7 @@ export default function BookingPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuthStore();
-
-  if (!id) return null;
-
-  const { trip, loading } = useTrip(id);
+  const { trip, loading } = useTrip(id ?? '');
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<FormData>();
 
   useEffect(() => {
@@ -28,6 +25,8 @@ export default function BookingPage() {
       navigate('/');
     }
   }, [user, navigate]);
+
+  if (!id) return null;
 
   const onSubmit = async (data: FormData) => {
     try {
