@@ -58,3 +58,13 @@ export interface Review {
   comment?: string;
   createdAt: string;
 }
+
+export interface AppNotification {
+  _id: string;
+  title: string;
+  body: string;
+  type: string;
+  link?: string;
+  is_read: boolean;
+  createdAt: string;
+}

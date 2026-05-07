@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
@@ -15,8 +16,17 @@ import ChatPage from './features/chat/ChatPage';
 import DashboardPage from './features/admin/DashboardPage';
 import ReviewPage from './features/reviews/ReviewPage';
 import ReviewHistoryPage from './features/reviews/ReviewHistoryPage';
+import { useFcmSetup } from './features/notifications/hooks/useFcmSetup';
 
 export default function App() {
+  useFcmSetup();
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(console.error);
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <Toaster richColors position="top-center" />
