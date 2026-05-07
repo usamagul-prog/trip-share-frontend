@@ -31,6 +31,7 @@ export default function LoginPage() {
 
   const handleConfirmAndLogin = async (code: string) => {
     if (code.length < 6) return;
+    if (submitting) return;
     setSubmitting(true);
     try {
       const idToken = await confirmOtp(code);
