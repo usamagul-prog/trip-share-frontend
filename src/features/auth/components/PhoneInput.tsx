@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
@@ -9,15 +10,16 @@ interface PhoneInputProps {
 }
 
 export function PhoneInput({ value, onChange, disabled }: PhoneInputProps) {
+  const id = useId();
   return (
     <div className="space-y-2">
-      <Label htmlFor="phone">Phone Number</Label>
+      <Label htmlFor={id}>Phone Number</Label>
       <div className="flex">
         <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm select-none">
           🇵🇰 +92
         </span>
         <Input
-          id="phone"
+          id={id}
           type="tel"
           inputMode="numeric"
           placeholder="3001234567"

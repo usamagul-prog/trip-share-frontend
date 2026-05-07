@@ -1,4 +1,4 @@
-import { useRef, KeyboardEvent, ClipboardEvent } from 'react';
+import { useRef, useId, KeyboardEvent, ClipboardEvent } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -11,47 +11,61 @@ interface OtpInputProps {
 
 export function OtpInput({ value, onChange, onComplete, disabled }: OtpInputProps) {
   const refs = useRef<(HTMLInputElement | null)[]>([]);
-  const digits = value.padEnd(6, ' ').split('').slice(0, 6);
+  const firstId = useId();
 
-  const updateDigit = (index: number, digit: string) => {
-    const next = [...digits];
-    next[index] = digit || ' ';
-    const newValue = next.join('').trimEnd();
-    onChange(newValue);
+  // Derive 6-slot array from string value
+  const slots: string[] = Array.from({ length: 6 }, (_, i) => value[i] ?? '');
+
+  const setValue = (slots: string[]) => {
+    const next = slots.join('');
+    onChange(next);
+    if (next.length === 6 && /^\d{6}$/.test(next)) onComplete?.(next);
+  };
+
+  const updateSlot = (index: number, digit: string) => {
+    const next = [...slots];
+    next[index] = digit;
+    setValue(next);
     if (digit && index < 5) refs.current[index + 1]?.focus();
-    const complete = next.join('').replace(/ /g, '');
-    if (complete.length === 6) onComplete?.(complete);
   };
 
   const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && digits[index] === ' ' && index > 0) {
-      refs.current[index - 1]?.focus();
+    if (e.key === 'Backspace') {
+      if (slots[index]) {
+        // Clear current slot
+        const next = [...slots];
+        next[index] = '';
+        setValue(next);
+      } else if (index > 0) {
+        // Move to previous slot if current is empty
+        refs.current[index - 1]?.focus();
+      }
     }
   };
 
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    onChange(pasted);
+    const next = Array.from({ length: 6 }, (_, i) => pasted[i] ?? '');
+    setValue(next);
     const focusIndex = Math.min(pasted.length, 5);
     refs.current[focusIndex]?.focus();
-    if (pasted.length === 6) onComplete?.(pasted);
   };
 
   return (
     <div className="space-y-2">
-      <Label>Verification Code</Label>
+      <Label htmlFor={`${firstId}-0`}>Verification Code</Label>
       <div className="flex gap-2 justify-center">
-        {digits.map((digit, i) => (
+        {slots.map((digit, i) => (
           <Input
             key={i}
+            id={i === 0 ? `${firstId}-0` : undefined}
             ref={(el) => { refs.current[i] = el; }}
             type="text"
             inputMode="numeric"
-            pattern="\d"
             maxLength={1}
-            value={digit.trim()}
-            onChange={(e) => updateDigit(i, e.target.value.replace(/\D/g, '').slice(-1))}
+            value={digit}
+            onChange={(e) => updateSlot(i, e.target.value.replace(/\D/g, '').slice(-1))}
             onKeyDown={(e) => handleKeyDown(i, e)}
             onPaste={handlePaste}
             disabled={disabled}
