@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface AuthUser {
+export interface AuthUser {
   _id: string;
   name: string;
   phone: string;
