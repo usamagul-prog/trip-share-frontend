@@ -13,11 +13,13 @@ export interface Trip {
   createdAt: string;
 }
 
+export type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed';
+
 export interface Booking {
   _id: string;
   rider: { _id: string; name: string; phone: string };
   pickup_point: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed';
+  status: BookingStatus;
 }
 
 export interface TripWithBookings extends Trip {
@@ -35,7 +37,7 @@ export interface BookingWithTrip {
     driver: { name: string };
   };
   pickup_point: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed';
+  status: BookingStatus;
   createdAt: string;
   updatedAt: string;
 }

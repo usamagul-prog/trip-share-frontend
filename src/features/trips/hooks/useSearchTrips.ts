@@ -16,6 +16,7 @@ export function useSearchTrips() {
   const search = useCallback(async (params: SearchParams) => {
     setLoading(true);
     setError(null);
+    setResults([]);
     try {
       const { data } = await api.get<{ trips: Trip[] }>('/api/trips/search', { params });
       setResults(data.trips);

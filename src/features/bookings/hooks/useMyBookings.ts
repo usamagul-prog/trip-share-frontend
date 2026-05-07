@@ -7,15 +7,17 @@ export function useMyBookings(tab: 'upcoming' | 'history' = 'upcoming') {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBookings = useCallback(async () => {
+  const fetchBookings = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
     setError(null);
     try {
       const { data } = await api.get<{ bookings: BookingWithTrip[] }>('/api/bookings/my', {
         params: { tab },
+        signal,
       });
       setBookings(data.bookings);
-    } catch {
+    } catch (err) {
+      if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === 'ERR_CANCELED') return;
       setError('Failed to load bookings');
     } finally {
       setLoading(false);
@@ -23,8 +25,10 @@ export function useMyBookings(tab: 'upcoming' | 'history' = 'upcoming') {
   }, [tab]);
 
   useEffect(() => {
-    fetchBookings();
+    const controller = new AbortController();
+    fetchBookings(controller.signal);
+    return () => controller.abort();
   }, [fetchBookings]);
 
-  return { bookings, loading, error, refetch: fetchBookings };
+  return { bookings, loading, error, refetch: () => fetchBookings() };
 }
