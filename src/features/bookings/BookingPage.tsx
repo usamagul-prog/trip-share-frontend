@@ -19,7 +19,7 @@ export default function BookingPage() {
   const { trip, loading } = useTrip(id!);
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<FormData>();
 
-  if (user?.role !== 'rider') {
+  if (user !== null && user.role !== 'rider') {
     navigate('/');
     return null;
   }
