@@ -14,6 +14,7 @@ const statusVariant: Record<Booking['status'], 'default' | 'secondary' | 'destru
   confirmed: 'default',
   rejected: 'destructive',
   cancelled: 'outline',
+  completed: 'outline',
 };
 
 export default function BookingRow({ booking, onAccept, onReject, disabled }: Props) {

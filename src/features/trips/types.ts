@@ -17,7 +17,7 @@ export interface Booking {
   _id: string;
   rider: { _id: string; name: string; phone: string };
   pickup_point: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled' | 'completed';
 }
 
 export interface TripWithBookings extends Trip {

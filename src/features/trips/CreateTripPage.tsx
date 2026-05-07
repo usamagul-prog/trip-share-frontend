@@ -19,6 +19,7 @@ const createTripSchema = z.object({
   seats_total: z.number().int().min(1).max(4),
   fare: z.number().int().min(1, 'Enter a fare').max(50000, 'Max fare is PKR 50,000'),
   vehicle_desc: z.string().max(100).optional(),
+  waypoints: z.array(z.string().min(2).max(60)).max(5).optional(),
 });
 
 type FormData = z.infer<typeof createTripSchema>;
@@ -39,7 +40,7 @@ export default function CreateTripPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(createTripSchema),
-    defaultValues: { seats_total: 1, fare: 0 },
+    defaultValues: { seats_total: 1, fare: 0, waypoints: [] },
   });
 
   const origin = watch('origin') ?? '';
@@ -160,6 +161,51 @@ export default function CreateTripPage() {
               />
               {errors.vehicle_desc && (
                 <p className="text-xs text-destructive">{errors.vehicle_desc.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <Label>
+                Waypoints{' '}
+                <span className="text-muted-foreground font-normal">(optional, up to 5)</span>
+              </Label>
+              {(watch('waypoints') ?? []).map((_wp, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <Input
+                    placeholder={`Stop ${idx + 1}`}
+                    defaultValue={watch('waypoints')?.[idx] ?? ''}
+                    onChange={(e) => {
+                      const current = [...(watch('waypoints') ?? [])];
+                      current[idx] = e.target.value;
+                      setValue('waypoints', current);
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    onClick={() => {
+                      const current = watch('waypoints') ?? [];
+                      setValue('waypoints', current.filter((_, i) => i !== idx));
+                    }}
+                  >
+                    ×
+                  </Button>
+                </div>
+              ))}
+              {(watch('waypoints') ?? []).length < 5 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    const current = watch('waypoints') ?? [];
+                    setValue('waypoints', [...current, '']);
+                  }}
+                >
+                  + Add Waypoint
+                </Button>
               )}
             </div>
 
