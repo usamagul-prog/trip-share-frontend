@@ -1,0 +1,17 @@
+export const PAKISTANI_CITIES = [
+  'Islamabad',
+  'Rawalpindi',
+  'Lahore',
+  'Karachi',
+  'Faisalabad',
+  'Peshawar',
+  'Quetta',
+  'Multan',
+  'Hyderabad',
+  'Sialkot',
+  'Gujranwala',
+  'Abbottabad',
+  'Mardan',
+  'Sukkur',
+  'Bahawalpur',
+] as const;
