@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
+import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import LoginPage from './features/auth/LoginPage';
 import RegisterPage from './features/auth/RegisterPage';
 import TripListPage from './features/trips/TripListPage';
@@ -15,19 +17,20 @@ import DashboardPage from './features/admin/DashboardPage';
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster richColors position="top-center" />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<TripListPage />} />
-        <Route path="/trips/create" element={<CreateTripPage />} />
-        <Route path="/trips/:id" element={<TripDetailPage />} />
-        <Route path="/trips/:id/book" element={<BookingPage />} />
-        <Route path="/bookings" element={<MyBookingsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/edit" element={<EditProfilePage />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/chat/:bookingId" element={<ChatPage />} />
-        <Route path="/admin" element={<DashboardPage />} />
+        <Route path="/" element={<ProtectedRoute><TripListPage /></ProtectedRoute>} />
+        <Route path="/trips/create" element={<ProtectedRoute><CreateTripPage /></ProtectedRoute>} />
+        <Route path="/trips/:id" element={<ProtectedRoute><TripDetailPage /></ProtectedRoute>} />
+        <Route path="/trips/:id/book" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+        <Route path="/chat/:bookingId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
