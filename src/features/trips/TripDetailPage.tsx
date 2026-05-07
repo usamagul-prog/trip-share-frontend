@@ -177,6 +177,12 @@ export default function TripDetailPage() {
         </CardContent>
       </Card>
 
+      {!isDriver && user?.role === 'rider' && trip.status === 'scheduled' && trip.seats_available > 0 && (
+        <Button className="w-full" onClick={() => navigate(`/trips/${trip._id}/book`)}>
+          Request a Seat — PKR {trip.fare.toLocaleString()}
+        </Button>
+      )}
+
       {isDriver && (
         <>
           {trip.bookings && trip.bookings.length > 0 && (
