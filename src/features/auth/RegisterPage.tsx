@@ -25,7 +25,7 @@ type ProfileForm = z.infer<typeof profileSchema>;
 export default function RegisterPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
-  const { step, loading, error, sendOtp, confirmOtp } = usePhoneAuth();
+  const { step, loading, error, sendOtp, confirmOtp, resetError } = usePhoneAuth();
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [idToken, setIdToken] = useState('');
@@ -41,7 +41,9 @@ export default function RegisterPage() {
   const selectedRole = watch('role');
 
   const handleSendOtp = async () => {
-    if (phone.length < 9) {
+    setOtp('');
+    resetError();
+    if (phone.length < 10) {
       toast.error('Enter a valid 10-digit phone number');
       return;
     }
