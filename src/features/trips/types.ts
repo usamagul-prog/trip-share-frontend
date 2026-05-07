@@ -1,6 +1,13 @@
 export interface Trip {
   _id: string;
-  driver: { _id: string; name: string; phone: string; avatar_url?: string };
+  driver: {
+    _id: string;
+    name: string;
+    phone: string;
+    avatar_url?: string;
+    avg_rating?: number;
+    review_count?: number;
+  };
   origin: string;
   destination: string;
   departure_time: string;
@@ -40,4 +47,14 @@ export interface BookingWithTrip {
   status: BookingStatus;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Review {
+  _id: string;
+  booking: string;
+  reviewer: { _id: string; name: string; avatar_url?: string };
+  reviewee: { _id: string; name: string; avatar_url?: string };
+  rating: number;
+  comment?: string;
+  createdAt: string;
 }
