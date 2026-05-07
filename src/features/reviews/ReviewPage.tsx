@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -33,10 +32,6 @@ export default function ReviewPage() {
 
   const rating = watch('rating');
   const comment = watch('comment');
-
-  useEffect(() => {
-    if (user !== null && !user) navigate('/login');
-  }, [user, navigate]);
 
   const onSubmit = async (values: FormValues) => {
     if (values.rating === 0) {
