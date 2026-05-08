@@ -1,19 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Clock, Banknote } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { MapPin, Clock, Banknote, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BookingWithTrip, BookingStatus } from '@/features/trips/types';
 
-const statusVariant: Record<
-  BookingStatus,
-  'default' | 'secondary' | 'outline' | 'destructive'
-> = {
-  pending:   'secondary',
-  confirmed: 'default',
-  rejected:  'destructive',
-  cancelled: 'destructive',
-  completed: 'outline',
+const STATUS_STYLES: Record<BookingStatus, string> = {
+  pending:   'bg-amber-500/10 text-amber-600 border border-amber-500/20',
+  confirmed: 'bg-primary/10 text-primary border border-primary/20',
+  rejected:  'bg-destructive/10 text-destructive border border-destructive/20',
+  cancelled: 'bg-destructive/10 text-destructive border border-destructive/20',
+  completed: 'bg-muted text-muted-foreground border border-border',
 };
 
 interface Props {
@@ -30,45 +25,54 @@ export default function BookingCard({ booking, onCancel, cancelLoading }: Props)
   const canCancel = isUpcoming && !isPast;
 
   return (
-    <Card
+    <div
       role="button"
       tabIndex={0}
-      className="cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-card border rounded-xl p-4 cursor-pointer group hover:shadow-lg hover:shadow-primary/10 hover:border-primary/30 transition-all duration-200"
       onClick={() => navigate(`/trips/${trip._id}`)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') navigate(`/trips/${trip._id}`);
       }}
     >
-      <CardContent className="pt-4 pb-4 space-y-2">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-            <span className="font-semibold text-sm">
-              {trip.origin} → {trip.destination}
-            </span>
-          </div>
-          <Badge variant={statusVariant[booking.status]}>{booking.status}</Badge>
+      {/* Route row */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
+          <span className="font-semibold text-sm text-foreground truncate">{trip.origin}</span>
+          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <span className="h-2 w-2 rounded-full bg-primary/40 shrink-0" />
+          <span className="font-semibold text-sm text-foreground truncate">{trip.destination}</span>
         </div>
+        <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full shrink-0 ml-2 capitalize ${STATUS_STYLES[booking.status]}`}>
+          {booking.status}
+        </span>
+      </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3 shrink-0" />
-            <span>
-              {new Date(trip.departure_time).toLocaleString('en-PK', {
-                dateStyle: 'medium',
-                timeStyle: 'short',
-              })}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Banknote className="h-3 w-3 shrink-0" />
-            <span>PKR {trip.fare.toLocaleString()}</span>
-          </div>
+      {/* Details row */}
+      <div className="mt-2.5 flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center gap-1">
+          <Clock className="h-3.5 w-3.5 shrink-0" />
+          <span>
+            {new Date(trip.departure_time).toLocaleString('en-PK', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            })}
+          </span>
         </div>
+        <div className="flex items-center gap-1">
+          <Banknote className="h-3.5 w-3.5 shrink-0" />
+          <span className="text-foreground font-semibold">PKR {trip.fare.toLocaleString()}</span>
+        </div>
+      </div>
 
-        <p className="text-xs text-muted-foreground">Pickup: {booking.pickup_point}</p>
+      {/* Pickup */}
+      <div className="mt-2.5 pt-2.5 border-t flex items-center gap-1.5">
+        <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">Pickup: {booking.pickup_point}</span>
+      </div>
 
-        {canCancel && onCancel && (
+      {canCancel && onCancel && (
+        <div className="mt-3">
           <Button
             variant="destructive"
             size="sm"
@@ -77,9 +81,11 @@ export default function BookingCard({ booking, onCancel, cancelLoading }: Props)
           >
             Cancel Booking
           </Button>
-        )}
+        </div>
+      )}
 
-        {booking.status === 'completed' && (
+      {booking.status === 'completed' && (
+        <div className="mt-3">
           <Button
             variant="outline"
             size="sm"
@@ -90,8 +96,8 @@ export default function BookingCard({ booking, onCancel, cancelLoading }: Props)
           >
             Leave Review
           </Button>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }

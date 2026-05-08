@@ -51,7 +51,10 @@ export default function TripsPage() {
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-semibold mb-4">Trips</h2>
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold">Trips</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">Monitor all trips across the platform</p>
+      </div>
 
       {stats && (
         <div className="flex gap-4 mb-6">
@@ -60,8 +63,8 @@ export default function TripsPage() {
             { label: 'This Week', value: stats.thisWeek },
             { label: 'This Month', value: stats.thisMonth },
           ].map(({ label, value }) => (
-            <div key={label} className="bg-white rounded-lg shadow px-5 py-3 flex items-center gap-3">
-              <span className="text-gray-500 text-sm">{label}:</span>
+            <div key={label} className="bg-card rounded-xl border px-5 py-3 flex items-center gap-3">
+              <span className="text-muted-foreground text-sm">{label}:</span>
               <span className="font-semibold">{value}</span>
             </div>
           ))}
@@ -72,7 +75,7 @@ export default function TripsPage() {
         <select
           value={filters.status}
           onChange={(e) => handleFilterChange('status', e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
           <option value="">All statuses</option>
           {['scheduled', 'active', 'completed', 'cancelled'].map((s) => (
@@ -84,39 +87,39 @@ export default function TripsPage() {
           placeholder="Origin"
           value={filters.origin}
           onChange={(e) => handleFilterChange('origin', e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 w-36"
+          className="border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 w-36"
         />
         <input
           type="text"
           placeholder="Destination"
           value={filters.destination}
           onChange={(e) => handleFilterChange('destination', e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 w-36"
+          className="border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 w-36"
         />
         <input
           type="date"
           value={filters.from}
           onChange={(e) => handleFilterChange('from', e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         <input
           type="date"
           value={filters.to}
           onChange={(e) => handleFilterChange('to', e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
       {loading ? (
-        <p className="text-gray-500 text-sm">Loading…</p>
+        <p className="text-muted-foreground text-sm">Loading…</p>
       ) : (
         <>
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-muted/50 border-b">
                 <tr>
                   {['Route', 'Driver', 'Date', 'Seats', 'Bookings', 'Status'].map((h) => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>
+                    <th key={h} className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -125,11 +128,11 @@ export default function TripsPage() {
                   <tr
                     key={t._id}
                     onClick={() => navigate(`/admin/trips/${t._id}`)}
-                    className="border-b last:border-0 hover:bg-gray-50 cursor-pointer"
+                    className="border-b last:border-0 hover:bg-muted/30 cursor-pointer"
                   >
                     <td className="px-4 py-3 font-medium">{t.origin} → {t.destination}</td>
-                    <td className="px-4 py-3 text-gray-600">{t.driver.name}</td>
-                    <td className="px-4 py-3 text-gray-600">{new Date(t.departure_time).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{t.driver.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{new Date(t.departure_time).toLocaleDateString()}</td>
                     <td className="px-4 py-3">{t.seats_available}/{t.seats_total}</td>
                     <td className="px-4 py-3">{t.bookingCount}</td>
                     <td className="px-4 py-3">
@@ -138,16 +141,16 @@ export default function TripsPage() {
                   </tr>
                 ))}
                 {trips.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">No trips found</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">No trips found</td></tr>
                 )}
               </tbody>
             </table>
           </div>
           {pages > 1 && (
             <div className="flex items-center gap-2 mt-4">
-              <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1 text-sm border rounded disabled:opacity-40">Previous</button>
-              <span className="text-sm text-gray-600">Page {page} of {pages}</span>
-              <button disabled={page === pages} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 text-sm border rounded disabled:opacity-40">Next</button>
+              <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1.5 text-sm rounded-lg border bg-card hover:bg-muted disabled:opacity-40 transition-colors">Previous</button>
+              <span className="text-sm text-muted-foreground">Page {page} of {pages}</span>
+              <button disabled={page === pages} onClick={() => setPage((p) => p + 1)} className="px-3 py-1.5 text-sm rounded-lg border bg-card hover:bg-muted disabled:opacity-40 transition-colors">Next</button>
             </div>
           )}
         </>
@@ -158,13 +161,13 @@ export default function TripsPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    scheduled: 'bg-blue-100 text-blue-800',
-    active: 'bg-green-100 text-green-800',
-    completed: 'bg-gray-100 text-gray-800',
-    cancelled: 'bg-red-100 text-red-800',
+    scheduled: 'bg-primary/10 text-primary border border-primary/20',
+    active: 'bg-green-500/10 text-green-600 border border-green-500/20',
+    completed: 'bg-muted text-muted-foreground border border-border',
+    cancelled: 'bg-destructive/10 text-destructive border border-destructive/20',
   };
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${colors[status] ?? 'bg-gray-100 text-gray-800'}`}>
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border ${colors[status] ?? 'bg-muted text-muted-foreground border-border'}`}>
       {status}
     </span>
   );

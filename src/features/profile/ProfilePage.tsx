@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Edit2, Download, Trash2 } from 'lucide-react';
+import { Edit2, Download, Trash2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
@@ -45,40 +45,48 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-      <Card>
-        <CardContent className="pt-6 pb-6">
-          <div className="flex items-center gap-4">
-            <ProfilePhoto src={user.avatar_url} name={user.name} size="xl" />
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold truncate">{user.name}</h1>
-              <p className="text-sm text-muted-foreground capitalize">{user.role}</p>
-              <p className="text-sm text-muted-foreground">{user.phone}</p>
-            </div>
-          </div>
+      <Card className="overflow-hidden">
+        {/* Gradient banner */}
+        <div className="h-20 bg-gradient-to-br from-primary/10 to-primary/5" />
 
-          {'avg_rating' in user && (user as { avg_rating?: number }).avg_rating ? (
-            <div className="mt-4 flex items-center gap-2">
-              <StarRating value={(user as { avg_rating?: number }).avg_rating ?? 0} size="md" />
-              <span className="text-sm text-muted-foreground">
-                {(user as { avg_rating?: number }).avg_rating?.toFixed(1)}
-              </span>
+        <CardContent className="pb-6 px-6">
+          {/* Avatar row — overlaps banner with negative margin */}
+          <div className="relative flex items-end justify-between -mt-10 mb-3">
+            <div className="ring-4 ring-card rounded-full">
+              <ProfilePhoto src={user.avatar_url} name={user.name} size="xl" />
             </div>
-          ) : null}
-
-          <div className="mt-4">
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm" className="mb-1">
               <Link to="/profile/edit">
                 <Edit2 className="h-4 w-4 mr-2" />
                 Edit Profile
               </Link>
             </Button>
           </div>
+
+          {/* Name / role / phone */}
+          <div className="space-y-0.5">
+            <h1 className="text-xl font-bold text-foreground">{user.name}</h1>
+            <p className="text-sm text-muted-foreground capitalize">{user.role}</p>
+            <p className="text-sm text-muted-foreground">{user.phone}</p>
+          </div>
+
+          {'avg_rating' in user && (user as { avg_rating?: number }).avg_rating ? (
+            <div className="mt-3 flex items-center gap-2">
+              <StarRating value={(user as { avg_rating?: number }).avg_rating ?? 0} size="md" />
+              <span className="text-sm text-muted-foreground">
+                {(user as { avg_rating?: number }).avg_rating?.toFixed(1)}
+              </span>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="pt-4 pb-4 space-y-3">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Data & Privacy</h2>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Data & Privacy</h2>
+          </div>
           <Separator />
           <div className="flex items-center justify-between">
             <div>

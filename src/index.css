@@ -1,59 +1,35 @@
 @import "tailwindcss";
 
+/* ── Light mode (default) ── */
 @theme {
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(240 10% 3.9%);
+  --color-background: hsl(210 20% 98%);
+  --color-foreground: hsl(222 47% 11%);
   --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(240 10% 3.9%);
+  --color-card-foreground: hsl(222 47% 11%);
   --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(240 10% 3.9%);
-  --color-primary: hsl(240 5.9% 10%);
-  --color-primary-foreground: hsl(0 0% 98%);
-  --color-secondary: hsl(240 4.8% 95.9%);
-  --color-secondary-foreground: hsl(240 5.9% 10%);
-  --color-muted: hsl(240 4.8% 95.9%);
-  --color-muted-foreground: hsl(240 3.8% 46.1%);
-  --color-accent: hsl(240 4.8% 95.9%);
-  --color-accent-foreground: hsl(240 5.9% 10%);
-  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-popover-foreground: hsl(222 47% 11%);
+  --color-primary: hsl(221 83% 53%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(214 32% 91%);
+  --color-secondary-foreground: hsl(222 47% 20%);
+  --color-muted: hsl(214 32% 91%);
+  --color-muted-foreground: hsl(215 16% 47%);
+  --color-accent: hsl(221 100% 96%);
+  --color-accent-foreground: hsl(221 83% 40%);
+  --color-destructive: hsl(0 84% 60%);
   --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(240 5.9% 90%);
-  --color-input: hsl(240 5.9% 90%);
-  --color-ring: hsl(240 5.9% 10%);
-  --radius: 0.5rem;
-
-  /* Brand colours for TripShare */
+  --color-border: hsl(214 32% 88%);
+  --color-input: hsl(214 32% 88%);
+  --color-ring: hsl(221 83% 53%);
+  --radius: 0.6rem;
   --color-brand: hsl(221 83% 53%);
   --color-brand-foreground: hsl(0 0% 100%);
+  --color-success: hsl(142 72% 42%);
+  --color-success-foreground: hsl(0 0% 100%);
+  --color-warning: hsl(38 92% 50%);
+  --color-warning-foreground: hsl(0 0% 100%);
 }
 
-@layer base {
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-background: hsl(240 10% 3.9%);
-      --color-foreground: hsl(0 0% 98%);
-      --color-card: hsl(240 10% 3.9%);
-      --color-card-foreground: hsl(0 0% 98%);
-      --color-popover: hsl(240 10% 3.9%);
-      --color-popover-foreground: hsl(0 0% 98%);
-      --color-primary: hsl(221 83% 53%);
-      --color-primary-foreground: hsl(0 0% 100%);
-      --color-secondary: hsl(240 3.7% 15.9%);
-      --color-secondary-foreground: hsl(0 0% 98%);
-      --color-muted: hsl(240 3.7% 15.9%);
-      --color-muted-foreground: hsl(240 5% 64.9%);
-      --color-accent: hsl(240 3.7% 15.9%);
-      --color-accent-foreground: hsl(0 0% 98%);
-      --color-destructive: hsl(0 62.8% 30.6%);
-      --color-destructive-foreground: hsl(0 0% 98%);
-      --color-border: hsl(240 3.7% 15.9%);
-      --color-input: hsl(240 3.7% 15.9%);
-      --color-ring: hsl(240 4.9% 83.9%);
-      --color-brand: hsl(221 83% 53%);
-      --color-brand-foreground: hsl(0 0% 100%);
-    }
-  }
-}
 
 @layer base {
   * {
@@ -65,5 +41,14 @@
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* Smooth card hover */
+  .card-hover {
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+  }
+  .card-hover:hover {
+    box-shadow: 0 8px 30px -8px hsl(221 83% 53% / 0.25);
+    transform: translateY(-1px);
   }
 }

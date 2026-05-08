@@ -65,7 +65,10 @@ function RiderView() {
 
   return (
     <div className="container mx-auto p-4 max-w-3xl space-y-4">
-      <h1 className="text-2xl font-bold">Find a Trip</h1>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Find a Trip</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Search available routes across Pakistan</p>
+      </div>
 
       <Card>
         <CardContent className="pt-4 space-y-3">
@@ -174,9 +177,14 @@ function DriverView() {
 
   return (
     <div className="container mx-auto p-4 max-w-3xl">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">My Trips</h1>
-        <Button onClick={() => navigate('/trips/create')}>Post a Trip</Button>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">My Trips</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage your posted routes</p>
+        </div>
+        <Button onClick={() => navigate('/trips/create')} className="shadow-sm shadow-primary/30">
+          + Post a Trip
+        </Button>
       </div>
       <div className="flex gap-2 mb-4">
         {DRIVER_TABS.map((t) => (

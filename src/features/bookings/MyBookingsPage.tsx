@@ -40,7 +40,10 @@ export default function MyBookingsPage() {
 
   return (
     <div className="container mx-auto p-4 max-w-3xl">
-      <h1 className="text-2xl font-bold mb-4">My Bookings</h1>
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold">My Bookings</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Your trip reservations</p>
+      </div>
 
       <div className="flex gap-2 mb-4">
         {(['upcoming', 'history'] as Tab[]).map((t) => (
@@ -74,6 +77,7 @@ export default function MyBookingsPage() {
       )}
       {!loading && !error && bookings.length > 0 && (
         <div className="space-y-3">
+          <p className="text-xs text-muted-foreground mb-2">{bookings.length} booking{bookings.length !== 1 ? 's' : ''}</p>
           {bookings.map((booking) => (
             <BookingCard
               key={booking._id}

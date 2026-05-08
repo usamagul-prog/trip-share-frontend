@@ -46,10 +46,16 @@ export default function EditProfilePage() {
       <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
         ← Back
       </Button>
+
+      {/* Page header */}
+      <div className="mb-5">
+        <h1 className="text-2xl font-bold text-foreground">Edit Profile</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Update your display name and account details</p>
+      </div>
+
       <Card>
-        <CardContent className="pt-6 pb-6 space-y-4">
-          <h1 className="text-xl font-bold">Edit Profile</h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <CardContent className="pt-6 pb-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-1.5">
               <Label htmlFor="name">Full Name</Label>
               <Input id="name" {...register('name')} placeholder="Your full name" />
@@ -58,13 +64,17 @@ export default function EditProfilePage() {
             <div className="space-y-1.5">
               <Label>Phone</Label>
               <Input value={user?.phone ?? ''} disabled className="text-muted-foreground" />
-              <p className="text-xs text-muted-foreground">Phone number cannot be changed.</p>
             </div>
             <div className="space-y-1.5">
               <Label>Role</Label>
               <Input value={user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ''} disabled className="text-muted-foreground capitalize" />
+              <p className="text-xs text-muted-foreground">Your phone number and role cannot be changed.</p>
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full h-11 text-base font-semibold shadow-sm shadow-primary/20"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? 'Saving…' : 'Save Changes'}
             </Button>
           </form>
