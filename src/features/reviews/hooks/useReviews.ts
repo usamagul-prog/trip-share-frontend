@@ -13,7 +13,7 @@ export function useReviews(userId: string, type: 'received' | 'given') {
       setLoading(true);
       setError(null);
       try {
-        const { data } = await api.get('/api/reviews', {
+        const { data } = await api.get('/reviews', {
           params: { userId, type },
           signal,
         });

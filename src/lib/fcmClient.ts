@@ -29,7 +29,7 @@ export async function requestAndSaveFcmToken(): Promise<void> {
 
     const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
     if (token) {
-      await api.put('/api/auth/fcm-token', { token });
+      await api.put('/auth/fcm-token', { token });
     }
   } catch (err) {
     console.error('[fcm] token registration failed:', err);

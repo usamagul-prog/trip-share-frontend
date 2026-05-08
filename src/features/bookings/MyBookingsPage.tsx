@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CalendarDays } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 import { useMyBookings } from './hooks/useMyBookings';
 import BookingCard from './components/BookingCard';
 import { BookingCardSkeleton } from '@/components/ui/skeleton';
@@ -12,6 +14,8 @@ import api from '@/lib/api';
 type Tab = 'upcoming' | 'history';
 
 export default function MyBookingsPage() {
+  const { user } = useAuthStore();
+  if (user?.role === 'driver') return <Navigate to="/trips" replace />;
   const [tab, setTab] = useState<Tab>('upcoming');
   const { bookings, loading, error, refetch } = useMyBookings(tab);
   const [cancelLoading, setCancelLoading] = useState<string | null>(null);
@@ -21,7 +25,7 @@ export default function MyBookingsPage() {
     setCancelLoading(bookingId);
     setConfirmBookingId(null);
     try {
-      await api.delete(`/api/bookings/${bookingId}`);
+      await api.delete(`/bookings/${bookingId}`);
       toast.success('Booking cancelled');
       refetch();
     } catch (err: unknown) {
@@ -35,7 +39,7 @@ export default function MyBookingsPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-lg">
+    <div className="container mx-auto p-4 max-w-3xl">
       <h1 className="text-2xl font-bold mb-4">My Bookings</h1>
 
       <div className="flex gap-2 mb-4">

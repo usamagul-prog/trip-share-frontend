@@ -39,7 +39,7 @@ export default function ReviewPage() {
       return;
     }
     try {
-      await api.post('/api/reviews', {
+      await api.post('/reviews', {
         booking_id: bookingId,
         rating: values.rating,
         comment: values.comment || undefined,
@@ -68,7 +68,7 @@ export default function ReviewPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-lg space-y-4">
+    <div className="container mx-auto p-4 max-w-xl space-y-4">
       <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
         ← Back
       </Button>

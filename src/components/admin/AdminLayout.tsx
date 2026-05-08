@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAdminStore } from '@/store/adminStore';
-import { LayoutDashboard, Users, Car, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Car, CalendarDays, ShieldAlert, LogOut } from 'lucide-react';
 
 interface Props {
   children: React.ReactNode;
@@ -49,6 +49,24 @@ export function AdminLayout({ children }: Props) {
           >
             <Car className="h-4 w-4" />
             Trips
+          </NavLink>
+          <NavLink
+            to="/admin/bookings"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'}`
+            }
+          >
+            <CalendarDays className="h-4 w-4" />
+            Bookings
+          </NavLink>
+          <NavLink
+            to="/admin/moderation"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800'}`
+            }
+          >
+            <ShieldAlert className="h-4 w-4" />
+            Moderation
           </NavLink>
         </nav>
         <div className="p-2 border-t border-gray-700">

@@ -18,7 +18,7 @@ export function useSearchTrips() {
     setError(null);
     setResults([]);
     try {
-      const { data } = await api.get<{ trips: Trip[] }>('/api/trips/search', { params });
+      const { data } = await api.get<{ trips: Trip[] }>('/trips/search', { params });
       setResults(data.trips);
     } catch {
       setError('Failed to load trips');

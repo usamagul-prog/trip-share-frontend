@@ -10,7 +10,7 @@ export function useNotifications() {
 
   const fetchNotifications = useCallback(async () => {
     try {
-      const { data } = await api.get('/api/notifications');
+      const { data } = await api.get('/notifications');
       setNotifications(data.notifications);
       setUnreadCount(data.unreadCount);
     } catch {
@@ -29,7 +29,7 @@ export function useNotifications() {
   }, [fetchNotifications]);
 
   const markRead = useCallback(async (id: string) => {
-    await api.patch(`/api/notifications/${id}/read`);
+    await api.patch(`/notifications/${id}/read`);
     setNotifications((prev) =>
       prev.map((n) => (n._id === id ? { ...n, is_read: true } : n))
     );
@@ -37,7 +37,7 @@ export function useNotifications() {
   }, []);
 
   const markAllRead = useCallback(async () => {
-    await api.patch('/api/notifications/read-all');
+    await api.patch('/notifications/read-all');
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
     setUnreadCount(0);
   }, []);

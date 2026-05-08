@@ -64,7 +64,7 @@ function RiderView() {
   const hasActiveFilters = maxPrice < 50000 || timeWindow !== 'all';
 
   return (
-    <div className="container mx-auto p-4 max-w-lg space-y-4">
+    <div className="container mx-auto p-4 max-w-3xl space-y-4">
       <h1 className="text-2xl font-bold">Find a Trip</h1>
 
       <Card>
@@ -173,7 +173,7 @@ function DriverView() {
   const { trips, loading, error } = useTrips(tab);
 
   return (
-    <div className="container mx-auto p-4 max-w-lg">
+    <div className="container mx-auto p-4 max-w-3xl">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">My Trips</h1>
         <Button onClick={() => navigate('/trips/create')}>Post a Trip</Button>

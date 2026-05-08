@@ -52,7 +52,7 @@ export default function CreateTripPage() {
   const onSubmit = async (data: FormData) => {
     try {
       const departureIso = new Date(data.departure_time).toISOString();
-      await api.post('/api/trips', { ...data, departure_time: departureIso });
+      await api.post('/trips', { ...data, departure_time: departureIso });
       toast.success('Trip posted successfully!');
       navigate('/trips');
     } catch (err: unknown) {
@@ -64,7 +64,7 @@ export default function CreateTripPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-lg">
+    <div className="container mx-auto p-4 max-w-xl">
       <div className="flex items-center gap-2 mb-4">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           ← Back

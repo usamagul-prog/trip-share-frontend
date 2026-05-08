@@ -44,7 +44,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <Card>
         <CardContent className="pt-6 pb-6">
           <div className="flex items-center gap-4">

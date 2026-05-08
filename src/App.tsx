@@ -9,6 +9,7 @@ import { useFcmSetup } from './features/notifications/hooks/useFcmSetup';
 import { OnboardingTour } from './features/onboarding/OnboardingTour';
 import { CookieConsent } from './features/legal/CookieConsent';
 import { usePlausible } from './hooks/usePlausible';
+import { useAuth } from './hooks/useAuth';
 
 // Public / auth pages
 const LandingPage = lazy(() => import('./features/landing/LandingPage'));
@@ -45,6 +46,7 @@ const BookingsAdminPage = lazy(() => import('./features/admin/BookingsPage'));
 const ModerationPage = lazy(() => import('./features/admin/ModerationPage'));
 
 function AppInner() {
+  useAuth();
   useFcmSetup();
   usePlausible();
 

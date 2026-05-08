@@ -11,7 +11,7 @@ export function useTrip(id: string) {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await api.get<{ trip: TripWithBookings }>(`/api/trips/${id}`);
+      const { data } = await api.get<{ trip: TripWithBookings }>(`/trips/${id}`);
       setTrip(data.trip);
     } catch {
       setError('Failed to load trip');

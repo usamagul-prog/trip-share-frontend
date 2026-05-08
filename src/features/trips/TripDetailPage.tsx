@@ -35,7 +35,7 @@ export default function TripDetailPage() {
   const handleAccept = async (bookingId: string) => {
     setActionLoading(true);
     try {
-      await api.put(`/api/bookings/${bookingId}/accept`);
+      await api.put(`/bookings/${bookingId}/accept`);
       toast.success('Booking accepted');
       refetch();
     } catch {
@@ -48,7 +48,7 @@ export default function TripDetailPage() {
   const handleReject = async (bookingId: string) => {
     setActionLoading(true);
     try {
-      await api.put(`/api/bookings/${bookingId}/reject`);
+      await api.put(`/bookings/${bookingId}/reject`);
       toast.success('Booking rejected');
       refetch();
     } catch {
@@ -62,7 +62,7 @@ export default function TripDetailPage() {
     if (!trip) return;
     setActionLoading(true);
     try {
-      await api.patch(`/api/trips/${trip._id}/cancel`);
+      await api.patch(`/trips/${trip._id}/cancel`);
       toast.success('Trip cancelled');
       navigate('/trips');
     } catch (err: unknown) {
@@ -79,7 +79,7 @@ export default function TripDetailPage() {
     if (!trip) return;
     setActionLoading(true);
     try {
-      await api.put(`/api/trips/${trip._id}/complete`);
+      await api.put(`/trips/${trip._id}/complete`);
       toast.success('Trip marked as completed');
       refetch();
     } catch (err: unknown) {
@@ -94,7 +94,7 @@ export default function TripDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-4 max-w-2xl space-y-4">
+      <div className="container mx-auto p-4 max-w-3xl space-y-4">
         <div className="h-8 w-16 rounded bg-muted animate-pulse" />
         <div className="rounded-xl border p-4 space-y-4">
           <div className="h-6 w-48 rounded bg-muted animate-pulse" />

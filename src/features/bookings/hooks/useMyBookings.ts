@@ -11,7 +11,7 @@ export function useMyBookings(tab: 'upcoming' | 'history' = 'upcoming') {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await api.get<{ bookings: BookingWithTrip[] }>('/api/bookings/my', {
+      const { data } = await api.get<{ bookings: BookingWithTrip[] }>('/bookings/my', {
         params: { tab },
         signal,
       });

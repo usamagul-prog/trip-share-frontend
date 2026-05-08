@@ -11,7 +11,7 @@ export function useTrips(status: 'scheduled' | 'completed' | 'cancelled' = 'sche
     setLoading(true);
     setError(null);
     try {
-      const { data } = await api.get<{ trips: Trip[] }>('/api/trips/my-trips', {
+      const { data } = await api.get<{ trips: Trip[] }>('/trips/my-trips', {
         params: { status },
       });
       setTrips(data.trips);

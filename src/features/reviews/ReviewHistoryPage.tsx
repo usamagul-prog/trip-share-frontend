@@ -17,7 +17,7 @@ export default function ReviewHistoryPage() {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl space-y-4">
+    <div className="container mx-auto p-4 max-w-3xl space-y-4">
       <h1 className="text-2xl font-bold">Reviews</h1>
 
       <div className="flex gap-2 border-b">

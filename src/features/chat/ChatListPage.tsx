@@ -33,7 +33,7 @@ export default function ChatListPage() {
   );
 
   return (
-    <div className="container mx-auto p-4 max-w-lg">
+    <div className="container mx-auto p-4 max-w-3xl">
       <h1 className="text-2xl font-bold mb-6">Messages</h1>
 
       {loading && (

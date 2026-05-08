@@ -33,7 +33,7 @@ export default function BookingPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await api.post('/api/bookings', { trip_id: id, pickup_point: data.pickup_point });
+      await api.post('/bookings', { trip_id: id, pickup_point: data.pickup_point });
       toast.success('Booking request sent');
       navigate('/bookings');
     } catch (err: unknown) {
@@ -58,7 +58,7 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-lg space-y-4">
+    <div className="container mx-auto p-4 max-w-xl space-y-4">
       <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>← Back</Button>
 
       <Card>
