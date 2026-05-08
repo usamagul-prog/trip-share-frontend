@@ -5,17 +5,40 @@ import { useAuthStore } from '@/store/authStore';
 import { useChat } from './hooks/useChat';
 import MessageBubble from './components/MessageBubble';
 import ChatInput from './components/ChatInput';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function ChatPage() {
   const { bookingId } = useParams<{ bookingId: string }>();
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.user);
-  const { messages, connected, send, reportMessage } = useChat(bookingId ?? '');
+  const { messages, hasMore, loadingEarlier, connected, send, loadEarlier, reportMessage } =
+    useChat(bookingId ?? '');
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const prevScrollHeightRef = useRef<number>(0);
 
+  // Auto-scroll to bottom only when a new message arrives (not when loading earlier)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (!loadingEarlier) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length, loadingEarlier]);
+
+  // After prepending earlier messages, restore scroll position
+  useEffect(() => {
+    if (!loadingEarlier && prevScrollHeightRef.current > 0 && scrollContainerRef.current) {
+      const newScrollHeight = scrollContainerRef.current.scrollHeight;
+      scrollContainerRef.current.scrollTop = newScrollHeight - prevScrollHeightRef.current;
+      prevScrollHeightRef.current = 0;
+    }
+  }, [messages, loadingEarlier]);
+
+  function handleLoadEarlier() {
+    if (scrollContainerRef.current) {
+      prevScrollHeightRef.current = scrollContainerRef.current.scrollHeight;
+    }
+    loadEarlier();
+  }
 
   if (!bookingId) return null;
 
@@ -39,12 +62,27 @@ export default function ChatPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 bg-gray-50">
-        {messages.length === 0 && (
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-4 py-4 bg-gray-50">
+        {/* Load earlier button */}
+        {hasMore && (
+          <div className="flex justify-center mb-4">
+            <button
+              onClick={handleLoadEarlier}
+              disabled={loadingEarlier}
+              className="flex items-center gap-2 text-xs text-gray-500 border rounded-full px-3 py-1 hover:bg-white disabled:opacity-50"
+            >
+              {loadingEarlier ? <Spinner className="h-3 w-3" /> : null}
+              {loadingEarlier ? 'Loading…' : 'Load earlier messages'}
+            </button>
+          </div>
+        )}
+
+        {messages.length === 0 && !hasMore && (
           <div className="text-center text-gray-400 text-sm mt-12">
             No messages yet. Say hello!
           </div>
         )}
+
         {messages.map((msg) => (
           <MessageBubble
             key={msg._id}

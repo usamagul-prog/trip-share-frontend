@@ -2,17 +2,31 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '@/lib/api';
 import { AppNotification } from '@/features/trips/types';
 
+interface NotificationsResponse {
+  notifications: AppNotification[];
+  unreadCount: number;
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export function useNotifications() {
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const LIMIT = 20;
 
-  const fetchNotifications = useCallback(async () => {
+  const fetchPage1 = useCallback(async () => {
     try {
-      const { data } = await api.get('/notifications');
+      const { data } = await api.get<NotificationsResponse>(`/notifications?page=1&limit=${LIMIT}`);
       setNotifications(data.notifications);
       setUnreadCount(data.unreadCount);
+      setTotal(data.total);
+      setPage(1);
     } catch {
       // silent — network errors shouldn't break UI
     } finally {
@@ -21,12 +35,28 @@ export function useNotifications() {
   }, []);
 
   useEffect(() => {
-    fetchNotifications();
-    intervalRef.current = setInterval(fetchNotifications, 30_000);
+    fetchPage1();
+    intervalRef.current = setInterval(fetchPage1, 30_000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [fetchNotifications]);
+  }, [fetchPage1]);
+
+  const loadMore = useCallback(async () => {
+    const nextPage = page + 1;
+    setLoadingMore(true);
+    try {
+      const { data } = await api.get<NotificationsResponse>(`/notifications?page=${nextPage}&limit=${LIMIT}`);
+      setNotifications((prev) => [...prev, ...data.notifications]);
+      setUnreadCount(data.unreadCount);
+      setTotal(data.total);
+      setPage(nextPage);
+    } catch {
+      // silent
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [page]);
 
   const markRead = useCallback(async (id: string) => {
     await api.patch(`/notifications/${id}/read`);
@@ -42,5 +72,18 @@ export function useNotifications() {
     setUnreadCount(0);
   }, []);
 
-  return { notifications, unreadCount, loading, markRead, markAllRead, refetch: fetchNotifications };
+  const hasMore = notifications.length < total;
+
+  return {
+    notifications,
+    unreadCount,
+    total,
+    loading,
+    loadingMore,
+    hasMore,
+    markRead,
+    markAllRead,
+    loadMore,
+    refetch: fetchPage1,
+  };
 }

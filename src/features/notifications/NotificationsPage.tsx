@@ -4,9 +4,11 @@ import NotificationItem from './components/NotificationItem';
 import { Button } from '@/components/ui/button';
 import { NotificationSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function NotificationsPage() {
-  const { notifications, unreadCount, loading, markRead, markAllRead } = useNotifications();
+  const { notifications, unreadCount, loading, loadingMore, hasMore, markRead, markAllRead, loadMore } =
+    useNotifications();
 
   return (
     <div className="container mx-auto p-4 max-w-3xl space-y-4">
@@ -34,11 +36,27 @@ export default function NotificationsPage() {
       )}
 
       {!loading && notifications.length > 0 && (
-        <div className="border rounded-md divide-y">
-          {notifications.map((n) => (
-            <NotificationItem key={n._id} notification={n} onRead={markRead} />
-          ))}
-        </div>
+        <>
+          <div className="border rounded-md divide-y">
+            {notifications.map((n) => (
+              <NotificationItem key={n._id} notification={n} onRead={markRead} />
+            ))}
+          </div>
+
+          {hasMore && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="min-w-32"
+              >
+                {loadingMore ? <Spinner className="h-4 w-4" /> : 'Load more'}
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -12,17 +12,31 @@ export interface ChatMessage {
   createdAt: string;
 }
 
+interface MessagesResponse {
+  messages: ChatMessage[];
+  hasMore: boolean;
+}
+
 export function useChat(bookingId: string) {
   const token = useAuthStore((s) => s.token);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingEarlier, setLoadingEarlier] = useState(false);
   const [connected, setConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
+  const oldestIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!bookingId || !token) return;
 
-    api.get<{ messages: ChatMessage[] }>(`/chat/${bookingId}/messages`)
-      .then((r) => setMessages(r.data.messages))
+    api.get<MessagesResponse>(`/chat/${bookingId}/messages`)
+      .then((r) => {
+        setMessages(r.data.messages);
+        setHasMore(r.data.hasMore);
+        if (r.data.messages.length > 0) {
+          oldestIdRef.current = r.data.messages[0]._id;
+        }
+      })
       .catch(() => {});
 
     const socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') ?? '', {
@@ -52,6 +66,25 @@ export function useChat(bookingId: string) {
     };
   }, [bookingId, token]);
 
+  const loadEarlier = useCallback(async () => {
+    if (!oldestIdRef.current || loadingEarlier) return;
+    setLoadingEarlier(true);
+    try {
+      const { data } = await api.get<MessagesResponse>(
+        `/chat/${bookingId}/messages?before=${oldestIdRef.current}`
+      );
+      if (data.messages.length > 0) {
+        oldestIdRef.current = data.messages[0]._id;
+        setMessages((prev) => [...data.messages, ...prev]);
+      }
+      setHasMore(data.hasMore);
+    } catch {
+      // silent
+    } finally {
+      setLoadingEarlier(false);
+    }
+  }, [bookingId, loadingEarlier]);
+
   const send = useCallback((text: string) => {
     const trimmed = text.trim();
     if (!trimmed || !socketRef.current) return;
@@ -62,5 +95,5 @@ export function useChat(bookingId: string) {
     await api.post(`/chat/messages/${messageId}/report`, { reason });
   }, []);
 
-  return { messages, connected, send, reportMessage };
+  return { messages, hasMore, loadingEarlier, connected, send, loadEarlier, reportMessage };
 }
