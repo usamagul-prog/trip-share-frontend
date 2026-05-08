@@ -1,7 +1,9 @@
+import { Bell } from 'lucide-react';
 import { useNotifications } from './hooks/useNotifications';
 import NotificationItem from './components/NotificationItem';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
+import { NotificationSkeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function NotificationsPage() {
   const { notifications, unreadCount, loading, markRead, markAllRead } = useNotifications();
@@ -18,13 +20,17 @@ export default function NotificationsPage() {
       </div>
 
       {loading && (
-        <div className="flex justify-center py-8">
-          <Spinner size="md" />
+        <div className="border rounded-md divide-y">
+          {Array.from({ length: 4 }).map((_, i) => <NotificationSkeleton key={i} />)}
         </div>
       )}
 
       {!loading && notifications.length === 0 && (
-        <p className="text-center text-muted-foreground py-12">No notifications yet</p>
+        <EmptyState
+          icon={Bell}
+          title="No notifications yet"
+          description="You'll be notified about booking requests, confirmations, and trip updates."
+        />
       )}
 
       {!loading && notifications.length > 0 && (

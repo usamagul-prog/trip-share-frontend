@@ -45,7 +45,7 @@ export default function ReviewPage() {
         comment: values.comment || undefined,
       });
       toast.success('Review submitted');
-      navigate(user?.role === 'rider' ? '/bookings' : '/');
+      navigate(user?.role === 'rider' ? '/bookings' : '/trips');
     } catch (err: unknown) {
       const data = (err as { response?: { data?: { error?: string; code?: string } } }).response
         ?.data;

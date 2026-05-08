@@ -1,0 +1,17 @@
+export const CITY_COORDS: Record<string, [number, number]> = {
+  Islamabad:   [33.6844, 73.0479],
+  Rawalpindi:  [33.5651, 73.0169],
+  Lahore:      [31.5204, 74.3587],
+  Karachi:     [24.8607, 67.0011],
+  Faisalabad:  [31.4504, 73.1350],
+  Peshawar:    [34.0150, 71.5249],
+  Quetta:      [30.1798, 66.9750],
+  Multan:      [30.1575, 71.5249],
+  Hyderabad:   [25.3960, 68.3578],
+  Sialkot:     [32.4945, 74.5229],
+  Gujranwala:  [32.1877, 74.1945],
+  Abbottabad:  [34.1688, 73.2215],
+  Mardan:      [34.1980, 72.0430],
+  Sukkur:      [27.7052, 68.8570],
+  Bahawalpur:  [29.3956, 71.6836],
+};

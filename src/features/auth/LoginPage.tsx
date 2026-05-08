@@ -37,7 +37,7 @@ export default function LoginPage() {
       const idToken = await confirmOtp(code);
       const res = await api.post<{ token: string; user: AuthUser }>('/auth/login', { idToken });
       setAuth(res.data.token, res.data.user);
-      navigate('/');
+      navigate('/trips');
     } catch (err: unknown) {
       const status = (err as { response?: { status: number } }).response?.status;
       const firebaseCode = (err as { code?: string }).code;

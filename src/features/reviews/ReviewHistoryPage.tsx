@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { Star } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useReviews } from './hooks/useReviews';
 import ReviewCard from './components/ReviewCard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Spinner } from '@/components/ui/spinner';
+import { ReviewCardSkeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 
 type Tab = 'received' | 'given';
 
@@ -35,17 +37,21 @@ export default function ReviewHistoryPage() {
       </div>
 
       {loading && (
-        <div className="flex justify-center py-8">
-          <Spinner size="md" />
-        </div>
+        <Card>
+          <CardContent className="pt-2">
+            {Array.from({ length: 3 }).map((_, i) => <ReviewCardSkeleton key={i} />)}
+          </CardContent>
+        </Card>
       )}
 
       {error && <p className="text-center text-destructive">{error}</p>}
 
       {!loading && !error && reviews.length === 0 && (
-        <p className="text-center text-muted-foreground py-8">
-          {tab === 'received' ? 'No reviews received yet' : "You haven't reviewed anyone yet"}
-        </p>
+        <EmptyState
+          icon={Star}
+          title={tab === 'received' ? 'No reviews received yet' : "You haven't reviewed anyone yet"}
+          description={tab === 'received' ? 'Reviews appear here after completed trips.' : 'After a completed trip, you can leave a review for your driver or rider.'}
+        />
       )}
 
       {!loading && reviews.length > 0 && (

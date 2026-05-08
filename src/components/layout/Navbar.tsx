@@ -29,8 +29,8 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="h-14 bg-white border-b px-4 flex items-center justify-between font-bold text-lg">
-      <span>TripShare</span>
+    <header role="banner" className="h-14 bg-white border-b px-4 flex items-center justify-between font-bold text-lg">
+      <Link to="/" aria-label="TripShare home" className="hover:opacity-80 transition-opacity">TripShare</Link>
 
       {user && (
         <div className="relative">
@@ -92,6 +92,6 @@ export default function Navbar() {
           )}
         </div>
       )}
-    </nav>
+    </header>
   );
 }

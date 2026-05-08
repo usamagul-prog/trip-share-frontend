@@ -21,8 +21,12 @@ export function useTrip(id: string) {
   }, [id]);
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
     fetchTrip();
-  }, [fetchTrip]);
+  }, [fetchTrip, id]);
 
   return { trip, loading, error, refetch: fetchTrip };
 }

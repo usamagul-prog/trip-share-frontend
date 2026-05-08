@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import api from '@/lib/api';
+import PickupMap from '@/components/map/PickupMap';
+import { CITY_COORDS } from '@/constants/cityCoords';
 
 interface FormData {
   pickup_point: string;
@@ -18,11 +20,12 @@ export default function BookingPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { trip, loading } = useTrip(id ?? '');
-  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<FormData>();
+  const { register, handleSubmit, setValue, formState: { isSubmitting, errors } } = useForm<FormData>();
+  const [mapCoords, setMapCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     if (user !== null && user.role !== 'rider') {
-      navigate('/');
+      navigate('/trips');
     }
   }, [user, navigate]);
 
@@ -76,17 +79,29 @@ export default function BookingPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label htmlFor="pickup_point" className="text-sm font-medium block mb-1">Your Pickup Point</label>
+          <label className="text-sm font-medium block mb-2">Your Pickup Point</label>
+
+          {CITY_COORDS[trip.origin] && (
+            <PickupMap
+              city={trip.origin}
+              onPickup={({ lat, lng, label }) => {
+                setMapCoords({ lat, lng });
+                setValue('pickup_point', label, { shouldValidate: true });
+              }}
+              className="h-52"
+            />
+          )}
+
           <textarea
             id="pickup_point"
             {...register('pickup_point', {
               required: 'Pickup point is required',
               minLength: { value: 2, message: 'Minimum 2 characters' },
-              maxLength: { value: 120, message: 'Maximum 120 characters' },
+              maxLength: { value: 200, message: 'Maximum 200 characters' },
             })}
-            placeholder="e.g. Sector F-10 Markaz, near Jinnah Super"
-            rows={3}
-            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+            placeholder={mapCoords ? `${mapCoords.lat.toFixed(5)}, ${mapCoords.lng.toFixed(5)}` : 'e.g. Sector F-10 Markaz, near Jinnah Super'}
+            rows={2}
+            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none mt-2"
           />
           {errors.pickup_point && (
             <p className="text-xs text-destructive mt-1">{errors.pickup_point.message}</p>

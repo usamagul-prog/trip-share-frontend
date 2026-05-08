@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CitySelect from './components/CitySelect';
+import { CAR_MODELS } from '@/constants/carModels';
 import api from '@/lib/api';
 
 const createTripSchema = z.object({
@@ -19,6 +20,7 @@ const createTripSchema = z.object({
   seats_total: z.number().int().min(1).max(4),
   fare: z.number().int().min(1, 'Enter a fare').max(50000, 'Max fare is PKR 50,000'),
   vehicle_desc: z.string().max(100).optional(),
+  vehicle_plate: z.string().regex(/^[A-Z]{2,4}-\d{3,4}$/i, 'Enter a valid Pakistani license plate (e.g. ABC-1234)').optional().or(z.literal('')),
   waypoints: z.array(z.string().min(2).max(60)).max(5).optional(),
 });
 
@@ -29,7 +31,7 @@ export default function CreateTripPage() {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    if (user && user.role !== 'driver') navigate('/');
+    if (user && user.role !== 'driver') navigate('/trips');
   }, [user, navigate]);
 
   const {
@@ -52,7 +54,7 @@ export default function CreateTripPage() {
       const departureIso = new Date(data.departure_time).toISOString();
       await api.post('/api/trips', { ...data, departure_time: departureIso });
       toast.success('Trip posted successfully!');
-      navigate('/');
+      navigate('/trips');
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: string } } }).response?.data?.error ||
@@ -150,17 +152,40 @@ export default function CreateTripPage() {
 
             <div className="space-y-1">
               <Label>
-                Vehicle Description{' '}
+                Vehicle{' '}
                 <span className="text-muted-foreground font-normal">(optional)</span>
               </Label>
-              <textarea
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="e.g. White Honda Civic 2020"
-                maxLength={100}
+              <select
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 {...register('vehicle_desc')}
-              />
+                defaultValue=""
+              >
+                <option value="">Select car model…</option>
+                {CAR_MODELS.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
               {errors.vehicle_desc && (
                 <p className="text-xs text-destructive">{errors.vehicle_desc.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <Label>
+                License Plate{' '}
+                <span className="text-muted-foreground font-normal">(optional, e.g. ABC-1234)</span>
+              </Label>
+              <Input
+                placeholder="ABC-1234"
+                maxLength={12}
+                {...register('vehicle_plate')}
+                onChange={(e) => {
+                  e.target.value = e.target.value.toUpperCase();
+                  register('vehicle_plate').onChange(e);
+                }}
+              />
+              {errors.vehicle_plate && (
+                <p className="text-xs text-destructive">{errors.vehicle_plate.message}</p>
               )}
             </div>
 

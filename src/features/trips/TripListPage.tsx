@@ -8,9 +8,11 @@ import CitySelect from './components/CitySelect';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Spinner } from '@/components/ui/spinner';
+import { TripCardSkeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 import { Trip } from './types';
+import { Search, MapPin } from 'lucide-react';
 
 type DriverTab = 'scheduled' | 'completed' | 'cancelled';
 type TimeWindow = 'all' | 'morning' | 'afternoon' | 'evening';
@@ -131,15 +133,30 @@ function RiderView() {
         </div>
       )}
 
-      {loading && <div className="flex justify-center py-10"><Spinner /></div>}
+      {loading && (
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => <TripCardSkeleton key={i} />)}
+        </div>
+      )}
       {!loading && error && <p className="text-center text-destructive py-6">{error}</p>}
       {!loading && searched && results.length === 0 && (
-        <p className="text-center text-muted-foreground py-10">No trips found for this route</p>
+        <EmptyState
+          icon={Search}
+          title="No trips found"
+          description="Try a different route or date — new trips are posted daily."
+        />
       )}
       {!loading && searched && results.length > 0 && filtered.length === 0 && (
-        <p className="text-center text-muted-foreground py-10">
-          No trips match the current filters — try adjusting price or time.
-        </p>
+        <EmptyState
+          icon={MapPin}
+          title="No matches for these filters"
+          description="Try adjusting the price range or time window."
+          action={
+            <button onClick={() => { setMaxPrice(50000); setTimeWindow('all'); }} className="text-sm text-primary underline">
+              Clear filters
+            </button>
+          }
+        />
       )}
       {!loading && filtered.length > 0 && (
         <div className="space-y-3">
@@ -177,10 +194,21 @@ function DriverView() {
           </button>
         ))}
       </div>
-      {loading && <div className="flex justify-center py-10"><Spinner /></div>}
+      {loading && (
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => <TripCardSkeleton key={i} />)}
+        </div>
+      )}
       {!loading && error && <p className="text-center text-destructive py-6">{error}</p>}
       {!loading && !error && trips.length === 0 && (
-        <p className="text-center text-muted-foreground py-10">No {tab} trips yet</p>
+        <EmptyState
+          icon={MapPin}
+          title={`No ${tab} trips`}
+          description={tab === 'scheduled' ? 'Post your first trip to get started.' : undefined}
+          action={tab === 'scheduled' ? (
+            <Button size="sm" onClick={() => navigate('/trips/create')}>Post a Trip</Button>
+          ) : undefined}
+        />
       )}
       {!loading && !error && trips.length > 0 && (
         <div className="space-y-3">

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import * as Sentry from '@sentry/react';
 
 export interface AuthUser {
   _id: string;
@@ -12,6 +13,7 @@ interface AuthState {
   token: string | null;
   user: AuthUser | null;
   setAuth: (token: string, user: AuthUser) => void;
+  setToken: (token: string) => void;
   clearAuth: () => void;
 }
 
@@ -20,10 +22,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   setAuth: (token, user) => {
     localStorage.setItem('token', token);
+    Sentry.setUser({ id: user._id, username: user.name });
     set({ token, user });
+  },
+  setToken: (token) => {
+    localStorage.setItem('token', token);
+    set({ token });
   },
   clearAuth: () => {
     localStorage.removeItem('token');
+    Sentry.setUser(null);
     set({ token: null, user: null });
   },
 }));

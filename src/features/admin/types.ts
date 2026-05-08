@@ -58,3 +58,37 @@ export interface AdminStats {
   thisWeek: number;
   thisMonth: number;
 }
+
+export interface AdminMetrics {
+  users: { total: number; drivers: number; riders: number };
+  trips: { active: number; today: number; thisWeek: number; thisMonth: number };
+  bookings: { today: number; thisWeek: number; thisMonth: number; pending: number };
+}
+
+export interface AdminBookingFull {
+  _id: string;
+  status: string;
+  pickup_point: string;
+  seats: number;
+  payment_method: string;
+  rider: { _id: string; name: string; phone: string };
+  trip: {
+    _id: string;
+    origin: string;
+    destination: string;
+    departure_time: string;
+    fare: number;
+    driver: { _id: string; name: string; phone: string };
+  };
+  createdAt: string;
+}
+
+export interface AdminReport {
+  _id: string;
+  status: 'pending' | 'reviewed' | 'dismissed';
+  reason: string;
+  reporter: { _id: string; name: string; phone: string };
+  message: { _id: string; text: string; sender: { _id: string; name: string } };
+  booking: string;
+  createdAt: string;
+}

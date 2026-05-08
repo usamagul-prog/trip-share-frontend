@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /how-it-works
+Allow: /terms
+Allow: /privacy
+Disallow: /admin
+Disallow: /trips/
+Disallow: /bookings
+Disallow: /profile
+Disallow: /notifications
+Disallow: /chat
+Disallow: /reviews
+
+Sitemap: https://trip-share-frontend.vercel.app/sitemap.xml

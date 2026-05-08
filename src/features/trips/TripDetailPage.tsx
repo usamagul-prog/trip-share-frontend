@@ -2,16 +2,18 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { MapPin, Clock, Users, Banknote, Car } from 'lucide-react';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuthStore } from '@/store/authStore';
 import { useTrip } from './hooks/useTrip';
 import BookingRow from './components/BookingRow';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spinner } from '@/components/ui/spinner';
 import api from '@/lib/api';
 import { Trip } from './types';
 import StarRating from '@/features/reviews/components/StarRating';
+import RouteMap from '@/components/map/RouteMap';
+import { CITY_COORDS } from '@/constants/cityCoords';
 
 const statusVariant: Record<Trip['status'], 'default' | 'secondary' | 'outline' | 'destructive'> = {
   scheduled: 'default',
@@ -26,6 +28,7 @@ export default function TripDetailPage() {
   const { user } = useAuthStore();
   const { trip, loading, error, refetch } = useTrip(id!);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const isDriver = !!user && !!trip && user._id === trip.driver._id;
 
@@ -61,7 +64,7 @@ export default function TripDetailPage() {
     try {
       await api.patch(`/api/trips/${trip._id}/cancel`);
       toast.success('Trip cancelled');
-      navigate('/');
+      navigate('/trips');
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: string } } }).response?.data?.error ||
@@ -91,8 +94,16 @@ export default function TripDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Spinner size="lg" />
+      <div className="container mx-auto p-4 max-w-2xl space-y-4">
+        <div className="h-8 w-16 rounded bg-muted animate-pulse" />
+        <div className="rounded-xl border p-4 space-y-4">
+          <div className="h-6 w-48 rounded bg-muted animate-pulse" />
+          <div className="grid grid-cols-2 gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-4 rounded bg-muted animate-pulse" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -183,6 +194,12 @@ export default function TripDetailPage() {
               </div>
             )}
           </div>
+          {CITY_COORDS[trip.origin] && CITY_COORDS[trip.destination] && (
+            <div className="border-t pt-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Route Preview</p>
+              <RouteMap origin={trip.origin} destination={trip.destination} className="h-44" />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -218,7 +235,7 @@ export default function TripDetailPage() {
               <Button
                 variant="destructive"
                 className="flex-1"
-                onClick={handleCancel}
+                onClick={() => setShowCancelConfirm(true)}
                 disabled={actionLoading}
               >
                 Cancel Trip
@@ -236,6 +253,17 @@ export default function TripDetailPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={showCancelConfirm}
+        onOpenChange={setShowCancelConfirm}
+        title="Cancel this trip?"
+        description="All pending bookings will be rejected and riders will be notified. This cannot be undone."
+        confirmLabel="Yes, cancel trip"
+        variant="destructive"
+        onConfirm={handleCancel}
+        loading={actionLoading}
+      />
     </div>
   );
 }

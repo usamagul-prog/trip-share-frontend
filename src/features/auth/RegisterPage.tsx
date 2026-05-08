@@ -19,6 +19,8 @@ import api from '@/lib/api';
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(60),
   role: z.enum(['driver', 'rider'] as const, { error: 'Please select a role' }),
+  dob: z.string().optional(),
+  terms_accepted: z.literal(true, { error: 'You must accept the Terms of Service' }),
 });
 type ProfileForm = z.infer<typeof profileSchema>;
 
@@ -66,10 +68,10 @@ export default function RegisterPage() {
     try {
       const res = await api.post<{ token: string; user: AuthUser }>(
         '/auth/register',
-        { idToken, name: data.name, role: data.role },
+        { idToken, name: data.name, role: data.role, dob: data.dob, terms_accepted: data.terms_accepted },
       );
       setAuth(res.data.token, res.data.user);
-      navigate('/');
+      navigate('/trips');
     } catch (err: unknown) {
       const status = (err as { response?: { status: number } }).response?.status;
       if (status === 409) {
@@ -185,6 +187,38 @@ export default function RegisterPage() {
                     <p className="text-sm text-destructive">{errors.role.message}</p>
                   )}
                 </div>
+
+                {selectedRole === 'driver' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="dob">Date of Birth <span className="text-muted-foreground text-xs">(must be 18+)</span></Label>
+                    <Input
+                      id="dob"
+                      type="date"
+                      max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
+                      {...register('dob')}
+                    />
+                    {errors.dob && <p className="text-sm text-destructive">{errors.dob.message}</p>}
+                  </div>
+                )}
+
+                <div className="flex items-start gap-2">
+                  <input
+                    id="terms"
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 rounded border-input accent-primary"
+                    {...register('terms_accepted')}
+                  />
+                  <Label htmlFor="terms" className="text-sm font-normal leading-snug cursor-pointer">
+                    I agree to the{' '}
+                    <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">Terms of Service</a>
+                    {selectedRole === 'driver' && (
+                      <> and the <a href="/terms#driver-liability" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">Driver Liability Disclaimer</a></>
+                    )}
+                  </Label>
+                </div>
+                {errors.terms_accepted && (
+                  <p className="text-sm text-destructive">{errors.terms_accepted.message}</p>
+                )}
 
                 <Button type="submit" className="w-full" disabled={submitting}>
                   {submitting && <Spinner size="sm" className="mr-2" />}

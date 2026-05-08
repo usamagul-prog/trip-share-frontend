@@ -1,3 +1,18 @@
-export default function Spinner() {
-  return <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-blue-600" />;
+import { cn } from '@/lib/utils';
+
+interface SpinnerProps {
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const sizes = { sm: 'h-4 w-4', md: 'h-6 w-6', lg: 'h-10 w-10' };
+
+export function Spinner({ className, size = 'md' }: SpinnerProps) {
+  return (
+    <div
+      className={cn('animate-spin rounded-full border-2 border-muted border-t-primary', sizes[size], className)}
+      role="status"
+      aria-label="Loading"
+    />
+  );
 }
