@@ -4,7 +4,8 @@ import * as Sentry from '@sentry/react';
 export interface AuthUser {
   _id: string;
   name: string;
-  phone: string;
+  email: string;
+  phone?: string;
   role: 'driver' | 'rider' | 'admin';
   avatar_url?: string;
 }

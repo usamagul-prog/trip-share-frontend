@@ -48,12 +48,18 @@ export function usePhoneAuth(): UsePhoneAuthReturn {
       setStep('otp');
     } catch (err: unknown) {
       const code = (err as { code?: string }).code;
+      const message = (err as { message?: string }).message;
+      console.error('[Firebase OTP error]', code, message, err);
       if (code === 'auth/invalid-phone-number') {
         setError('Invalid phone number. Use format: +92XXXXXXXXXX');
       } else if (code === 'auth/too-many-requests') {
         setError('Too many attempts. Please wait before trying again.');
+      } else if (code === 'auth/operation-not-allowed') {
+        setError('Phone auth is not enabled in Firebase. Enable it in the Firebase console.');
+      } else if (code === 'auth/captcha-check-failed') {
+        setError('reCAPTCHA failed. Refresh the page and try again.');
       } else {
-        setError('Failed to send OTP. Check the phone number and try again.');
+        setError(`OTP error (${code ?? 'unknown'}): ${message ?? 'Check console for details'}`);
       }
       recaptchaRef.current?.clear();
       recaptchaRef.current = null;

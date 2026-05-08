@@ -67,7 +67,7 @@ export default function ProfilePage() {
           <div className="space-y-0.5">
             <h1 className="text-xl font-bold text-foreground">{user.name}</h1>
             <p className="text-sm text-muted-foreground capitalize">{user.role}</p>
-            <p className="text-sm text-muted-foreground">{user.phone}</p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
 
           {'avg_rating' in user && (user as { avg_rating?: number }).avg_rating ? (

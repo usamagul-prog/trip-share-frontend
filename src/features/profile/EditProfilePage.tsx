@@ -63,12 +63,12 @@ export default function EditProfilePage() {
             </div>
             <div className="space-y-1.5">
               <Label>Phone</Label>
-              <Input value={user?.phone ?? ''} disabled className="text-muted-foreground" />
+              <Input value={user?.email ?? ''} disabled className="text-muted-foreground" />
             </div>
             <div className="space-y-1.5">
               <Label>Role</Label>
               <Input value={user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ''} disabled className="text-muted-foreground capitalize" />
-              <p className="text-xs text-muted-foreground">Your phone number and role cannot be changed.</p>
+              <p className="text-xs text-muted-foreground">Your email and role cannot be changed.</p>
             </div>
             <Button
               type="submit"
