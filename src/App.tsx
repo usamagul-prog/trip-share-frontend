@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
+import { AdminProtectedRoute } from '@/components/admin/AdminProtectedRoute';
+import { AdminLayout } from '@/components/admin/AdminLayout';
 import LoginPage from './features/auth/LoginPage';
 import RegisterPage from './features/auth/RegisterPage';
 import TripListPage from './features/trips/TripListPage';
@@ -13,9 +15,14 @@ import ProfilePage from './features/profile/ProfilePage';
 import EditProfilePage from './features/profile/EditProfilePage';
 import NotificationsPage from './features/notifications/NotificationsPage';
 import ChatPage from './features/chat/ChatPage';
-import DashboardPage from './features/admin/DashboardPage';
 import ReviewPage from './features/reviews/ReviewPage';
 import ReviewHistoryPage from './features/reviews/ReviewHistoryPage';
+import AdminLoginPage from './features/admin/LoginPage';
+import DashboardPage from './features/admin/DashboardPage';
+import UsersPage from './features/admin/UsersPage';
+import UserDetailPage from './features/admin/UserDetailPage';
+import TripsAdminPage from './features/admin/TripsPage';
+import TripDetailAdminPage from './features/admin/TripDetailPage';
 import { useFcmSetup } from './features/notifications/hooks/useFcmSetup';
 
 export default function App() {
@@ -44,7 +51,13 @@ export default function App() {
         <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path="/chat/:bookingId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        {/* Admin */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin" element={<AdminProtectedRoute><AdminLayout><DashboardPage /></AdminLayout></AdminProtectedRoute>} />
+        <Route path="/admin/users" element={<AdminProtectedRoute><AdminLayout><UsersPage /></AdminLayout></AdminProtectedRoute>} />
+        <Route path="/admin/users/:id" element={<AdminProtectedRoute><AdminLayout><UserDetailPage /></AdminLayout></AdminProtectedRoute>} />
+        <Route path="/admin/trips" element={<AdminProtectedRoute><AdminLayout><TripsAdminPage /></AdminLayout></AdminProtectedRoute>} />
+        <Route path="/admin/trips/:id" element={<AdminProtectedRoute><AdminLayout><TripDetailAdminPage /></AdminLayout></AdminProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
