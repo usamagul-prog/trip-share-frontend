@@ -1,5 +1,5 @@
 import { getToken } from 'firebase/messaging';
-import { messaging } from './firebase';
+import { getMessagingInstance } from './firebase';
 import api from './api';
 
 export async function requestAndSaveFcmToken(): Promise<void> {
@@ -9,6 +9,9 @@ export async function requestAndSaveFcmToken(): Promise<void> {
 
     const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
     if (!vapidKey) return;
+
+    const messaging = await getMessagingInstance();
+    if (!messaging) return;
 
     const registration = await navigator.serviceWorker.ready;
 

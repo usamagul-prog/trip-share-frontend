@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,5 +13,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const messaging = getMessaging(app);
+
+export const getMessagingInstance = async () => {
+  try {
+    const supported = await isSupported();
+    if (!supported) return null;
+    return getMessaging(app);
+  } catch {
+    return null;
+  }
+};
+
 export default app;
