@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, CalendarDays, User, Star, Bell } from 'lucide-react';
+import { Home, CalendarDays, User, Bell, MessageCircle } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import { cn } from '@/lib/utils';
@@ -14,15 +14,15 @@ interface NavItem {
 const RIDER_LINKS: NavItem[] = [
   { to: '/trips',         label: 'Trips',         Icon: Home },
   { to: '/bookings',      label: 'Bookings',       Icon: CalendarDays },
+  { to: '/chat',          label: 'Messages',       Icon: MessageCircle },
   { to: '/notifications', label: 'Alerts',         Icon: Bell, showBadge: true },
-  { to: '/reviews',       label: 'Reviews',        Icon: Star },
   { to: '/profile',       label: 'Profile',        Icon: User },
 ];
 
 const DRIVER_LINKS: NavItem[] = [
   { to: '/trips',         label: 'My Trips',       Icon: Home },
+  { to: '/chat',          label: 'Messages',       Icon: MessageCircle },
   { to: '/notifications', label: 'Alerts',         Icon: Bell, showBadge: true },
-  { to: '/reviews',       label: 'Reviews',        Icon: Star },
   { to: '/profile',       label: 'Profile',        Icon: User },
 ];
 

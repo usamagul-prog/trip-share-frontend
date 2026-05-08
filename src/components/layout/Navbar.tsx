@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Bell, ChevronDown, LogOut, User, Star, CalendarDays, MapPin } from 'lucide-react';
+import { Bell, ChevronDown, LogOut, User, Star, CalendarDays, MapPin, MessageCircle } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import NotificationItem from '@/features/notifications/components/NotificationItem';
@@ -55,11 +55,13 @@ export default function Navbar() {
 
   const driverLinks = [
     { to: '/trips', label: 'My Trips', Icon: MapPin },
+    { to: '/chat', label: 'Messages', Icon: MessageCircle },
     { to: '/reviews', label: 'Reviews', Icon: Star },
   ];
   const riderLinks = [
     { to: '/trips', label: 'Find Trips', Icon: MapPin },
     { to: '/bookings', label: 'Bookings', Icon: CalendarDays },
+    { to: '/chat', label: 'Messages', Icon: MessageCircle },
     { to: '/reviews', label: 'Reviews', Icon: Star },
   ];
   const navLinks = user?.role === 'driver' ? driverLinks : riderLinks;

@@ -13,7 +13,7 @@ export function useAuth() {
       api
         .get<{ user: Parameters<typeof setAuth>[1] }>('/auth/me')
         .then((res) => setAuth(token, res.data.user))
-        .catch(() => clearAuth());
+        .catch((err) => { if (err?.response?.status === 401) clearAuth(); });
     }
   }, [token, user, setAuth, clearAuth]);
 

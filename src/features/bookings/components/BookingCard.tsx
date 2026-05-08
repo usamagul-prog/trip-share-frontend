@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Clock, Banknote, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Banknote, ArrowRight, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BookingWithTrip, BookingStatus } from '@/features/trips/types';
 
@@ -71,31 +71,40 @@ export default function BookingCard({ booking, onCancel, cancelLoading }: Props)
         <span className="text-xs text-muted-foreground">Pickup: {booking.pickup_point}</span>
       </div>
 
-      {canCancel && onCancel && (
-        <div className="mt-3">
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={(e) => { e.stopPropagation(); onCancel(); }}
-            disabled={cancelLoading}
-          >
-            Cancel Booking
-          </Button>
-        </div>
-      )}
-
-      {booking.status === 'completed' && (
-        <div className="mt-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/trips/${booking.trip._id}/review?bookingId=${booking._id}`);
-            }}
-          >
-            Leave Review
-          </Button>
+      {(canCancel || ['confirmed', 'completed'].includes(booking.status)) && (
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          {['confirmed', 'completed'].includes(booking.status) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => { e.stopPropagation(); navigate(`/chat/${booking._id}`); }}
+            >
+              <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
+              Chat
+            </Button>
+          )}
+          {canCancel && onCancel && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={(e) => { e.stopPropagation(); onCancel(); }}
+              disabled={cancelLoading}
+            >
+              Cancel Booking
+            </Button>
+          )}
+          {booking.status === 'completed' && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/trips/${booking.trip._id}/review?bookingId=${booking._id}`);
+              }}
+            >
+              Leave Review
+            </Button>
+          )}
         </div>
       )}
     </div>

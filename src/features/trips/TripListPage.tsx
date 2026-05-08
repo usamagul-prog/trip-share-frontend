@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { useTrips } from './hooks/useTrips';
+import { useAllTrips } from './hooks/useAllTrips';
 import { useSearchTrips } from './hooks/useSearchTrips';
 import TripCard from './components/TripCard';
 import CitySelect from './components/CitySelect';
@@ -12,7 +13,7 @@ import { TripCardSkeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 import { Trip } from './types';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, X } from 'lucide-react';
 
 type DriverTab = 'scheduled' | 'completed' | 'cancelled';
 type TimeWindow = 'all' | 'morning' | 'afternoon' | 'evening';
@@ -48,11 +49,16 @@ function RiderView() {
   const [maxPrice, setMaxPrice] = useState(50000);
   const [timeWindow, setTimeWindow] = useState<TimeWindow>('all');
   const [searched, setSearched] = useState(false);
-  const { results, loading, error, search } = useSearchTrips();
 
-  const handleFromChange = (v: string) => { setFrom(v); setSearched(false); };
-  const handleToChange   = (v: string) => { setTo(v);   setSearched(false); };
-  const handleDateChange = (v: string) => { setDate(v); setSearched(false); };
+  const { trips: allTrips, loading: allLoading, error: allError } = useAllTrips();
+  const { results: searchResults, loading: searchLoading, error: searchError, search } = useSearchTrips();
+
+  const loading = searched ? searchLoading : allLoading;
+  const error = searched ? searchError : allError;
+  const baseTrips: Trip[] = searched ? searchResults : allTrips;
+  const filtered = applyFilters(baseTrips, maxPrice, timeWindow);
+  const hasActiveFilters = maxPrice < 50000 || timeWindow !== 'all';
+  const hasSearchCriteria = from || to || date;
 
   const handleSearch = () => {
     if (!from || !to || !date) return;
@@ -60,8 +66,10 @@ function RiderView() {
     search({ from, to, date });
   };
 
-  const filtered = searched ? applyFilters(results, maxPrice, timeWindow) : [];
-  const hasActiveFilters = maxPrice < 50000 || timeWindow !== 'all';
+  const handleClearSearch = () => {
+    setFrom(''); setTo(''); setDate('');
+    setSearched(false);
+  };
 
   return (
     <div className="container mx-auto p-4 max-w-3xl space-y-4">
@@ -73,50 +81,50 @@ function RiderView() {
       <Card>
         <CardContent className="pt-4 space-y-3">
           <div className="grid grid-cols-2 gap-2">
-            <CitySelect value={from} onChange={handleFromChange} placeholder="From" />
-            <CitySelect value={to} onChange={handleToChange} placeholder="To" />
+            <CitySelect value={from} onChange={(v) => { setFrom(v); setSearched(false); }} placeholder="From" />
+            <CitySelect value={to} onChange={(v) => { setTo(v); setSearched(false); }} placeholder="To" />
           </div>
           <input
             type="date"
             aria-label="Departure date"
             value={date}
-            onChange={(e) => handleDateChange(e.target.value)}
+            onChange={(e) => { setDate(e.target.value); setSearched(false); }}
             min={new Date().toISOString().split('T')[0]}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           />
-          <Button
-            className="w-full"
-            onClick={handleSearch}
-            disabled={!from || !to || !date || loading}
-          >
-            {loading ? 'Searching…' : 'Search Trips'}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              className="flex-1"
+              onClick={handleSearch}
+              disabled={!from || !to || !date || loading}
+            >
+              {searchLoading ? 'Searching…' : 'Search Trips'}
+            </Button>
+            {(searched || hasSearchCriteria) && (
+              <Button variant="outline" size="icon" onClick={handleClearSearch} title="Clear search">
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
 
-      {searched && (
+      {baseTrips.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">Filters</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              {searched ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} found` : `${filtered.length} upcoming trip${filtered.length !== 1 ? 's' : ''}`}
+            </p>
             {hasActiveFilters && (
-              <button
-                onClick={() => { setMaxPrice(50000); setTimeWindow('all'); }}
-                className="text-xs text-primary underline"
-              >
-                Clear all
+              <button onClick={() => { setMaxPrice(50000); setTimeWindow('all'); }} className="text-xs text-primary underline">
+                Clear filters
               </button>
             )}
           </div>
           <div>
-            <label className="text-xs text-muted-foreground">
-              Max price: PKR {maxPrice.toLocaleString()}
-            </label>
+            <label className="text-xs text-muted-foreground">Max price: PKR {maxPrice.toLocaleString()}</label>
             <input
-              type="range"
-              min={0}
-              max={50000}
-              step={500}
-              value={maxPrice}
+              type="range" min={0} max={50000} step={500} value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full mt-1"
             />
@@ -142,14 +150,14 @@ function RiderView() {
         </div>
       )}
       {!loading && error && <p className="text-center text-destructive py-6">{error}</p>}
-      {!loading && searched && results.length === 0 && (
+      {!loading && searched && searchResults.length === 0 && (
         <EmptyState
           icon={Search}
           title="No trips found"
           description="Try a different route or date — new trips are posted daily."
         />
       )}
-      {!loading && searched && results.length > 0 && filtered.length === 0 && (
+      {!loading && !error && baseTrips.length > 0 && filtered.length === 0 && (
         <EmptyState
           icon={MapPin}
           title="No matches for these filters"

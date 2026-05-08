@@ -22,15 +22,13 @@ export default function ChatListPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<{ bookings: BookingWithChat[] }>('/bookings?tab=all')
+    api.get<{ bookings: BookingWithChat[] }>('/chat/conversations')
       .then((r) => setBookings(r.data.bookings ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const chatableBookings = bookings.filter((b) =>
-    ['confirmed', 'completed'].includes(b.status),
-  );
+  const chatableBookings = bookings;
 
   return (
     <div className="container mx-auto p-4 max-w-3xl">
