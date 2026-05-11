@@ -97,12 +97,13 @@ export default function LoginPage() {
                   <Label htmlFor="username">Username</Label>
                   <Input
                     id="username"
+                    name="username"
                     type="text"
                     placeholder="admin"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     disabled={loading}
-                    autoComplete="username"
+                    autoComplete="off"
                     required
                   />
                 </div>
